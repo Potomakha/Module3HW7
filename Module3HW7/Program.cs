@@ -1,12 +1,18 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 
 namespace Module3HW7
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            MainAsync().GetAwaiter().GetResult();
+        }
+
+        private static async Task MainAsync()
+        {
+            var startup = new Startup();
+            await startup.Run();
         }
     }
 }
