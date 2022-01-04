@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Threading.Tasks;
 
 namespace Module3HW7.Interfaces
 {
     public interface IMessageWriter
     {
-        public void Write(string message);
+        public Task WriteLog(string message);
+        public Task WriteBackup();
     }
 }

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Module3HW7.Configs;
 using Module3HW7.Interfaces;
 using Module3HW7.Models;
 
@@ -6,45 +9,47 @@ namespace Module3HW7.Services
 {
     public class Logger : ILogger
     {
-        public static readonly Action MakeBackup;
         private readonly IMessageWriter _messageWriter;
-        private readonly IConfigurationService _config;
-        private int _recordsCount = 0;
-        private int _maxRecords;
+        private readonly IConfigurationService _configurationService;
+        private static int _recordsCount = 0;
+        private Config _config;
+
         public Logger(IMessageWriter messageWriter, IConfigurationService configurationService)
         {
             _messageWriter = messageWriter;
-            _config = configurationService;
-            _maxRecords = _config.GetConfig().RecordsInOneTime;
+            _configurationService = configurationService;
+            _config = _configurationService.GetConfig();
         }
 
-        public void Log(LogType type, string mesage)
+        public event Action MakeBackup;
+
+        public async Task Log(LogType type, string mesage)
         {
             var log = $"{DateTime.UtcNow}: {type}: {mesage}";
             Console.WriteLine(log);
-            _messageWriter.Write(mesage);
+            await _messageWriter.WriteLog(log);
             _recordsCount++;
 
-            if (_recordsCount >= _maxRecords)
+            if (_recordsCount >= _config.RecordsInOneTime)
             {
                 MakeBackup.Invoke();
                 _recordsCount = 0;
             }
         }
 
-        public void LogError(string message)
+        public async Task LogError(string message)
         {
-            Log(LogType.Error, message);
+            await Log(LogType.Error, message);
         }
 
-        public void LogInfo(string message)
+        public async Task LogInfo(string message)
         {
-            Log(LogType.Info, message);
+            await Log(LogType.Info, message);
         }
 
-        public void LogWarning(string message)
+        public async Task LogWarning(string message)
         {
-            Log(LogType.Warning, message);
+            await Log(LogType.Warning, message);
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Module3HW7.Interfaces;
+using Module3HW7.Services;
 
 namespace Module3HW7
 {
@@ -6,7 +9,14 @@ namespace Module3HW7
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var serviceProvider = new ServiceCollection()
+                .AddSingleton<ILogger, Logger>()
+                .AddSingleton<IMessageWriter, MessageWriter>()
+                .AddTransient<IConfigurationService, ConfigurationService>()
+                .AddTransient<Starter>()
+                .BuildServiceProvider();
+            var starter = serviceProvider.GetService<Starter>();
+            Task.Run(async () => { await starter.Run(); }).GetAwaiter().GetResult();
         }
     }
 }

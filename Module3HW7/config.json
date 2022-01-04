@@ -1,5 +1,5 @@
 {
   "RecordsInOneTime": 5,
-  "LoggerPath": "Log/Backup",
-  "BackupPath": "Log"
+  "LoggerPath": "Log",
+  "BackupPath": "Log\\Backup"
 }
