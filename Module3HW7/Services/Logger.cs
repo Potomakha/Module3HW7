@@ -11,6 +11,7 @@ namespace Module3HW7.Services
     {
         private readonly IMessageWriter _messageWriter;
         private readonly IConfigurationService _configurationService;
+        private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
         private static int _recordsCount = 0;
         private Config _config;
 
@@ -23,33 +24,36 @@ namespace Module3HW7.Services
 
         public event Action MakeBackup;
 
-        public async Task Log(LogType type, string mesage)
+        public async Task LogAsync(LogType type, string mesage)
         {
             var log = $"{DateTime.UtcNow}: {type}: {mesage}";
             Console.WriteLine(log);
-            await _messageWriter.WriteLog(log);
-            _recordsCount++;
+            await _messageWriter.WriteLogAsync(log);
 
+            await _semaphoreSlim.WaitAsync();
+            _recordsCount++;
             if (_recordsCount >= _config.RecordsInOneTime)
             {
                 MakeBackup.Invoke();
                 _recordsCount = 0;
             }
+
+            _semaphoreSlim.Release();
         }
 
-        public async Task LogError(string message)
+        public async Task LogErrorAsync(string message)
         {
-            await Log(LogType.Error, message);
+            await LogAsync(LogType.Error, message);
         }
 
-        public async Task LogInfo(string message)
+        public async Task LogInfoAsync(string message)
         {
-            await Log(LogType.Info, message);
+            await LogAsync(LogType.Info, message);
         }
 
-        public async Task LogWarning(string message)
+        public async Task LogWarningAsync(string message)
         {
-            await Log(LogType.Warning, message);
+            await LogAsync(LogType.Warning, message);
         }
     }
 }

@@ -30,16 +30,11 @@ namespace Module3HW7.Services
             _logWriter.AutoFlush = true;
         }
 
-        public async Task WriteLog(string message)
+        public async Task WriteLogAsync(string message)
         {
             await _semaphore.WaitAsync();
             await _logWriter.WriteLineAsync(message);
             _semaphore.Release();
-        }
-
-        public async Task WriteBackup()
-        {
-            await Task.Delay(100);
         }
     }
 }

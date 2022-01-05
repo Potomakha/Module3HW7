@@ -21,9 +21,16 @@ namespace Module3HW7
 
         public async Task Run()
         {
+            Task task1 = Action("first");
+            Task task2 = Action("second");
+            await Task.WhenAll(task1, task2);
+        }
+
+        public async Task Action(string message)
+        {
             for (int i = 0; i < 50; i++)
             {
-                await _logger.LogError("aweqweqwe");
+                await _logger.LogErrorAsync(message);
             }
         }
     }
