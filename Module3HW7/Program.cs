@@ -13,6 +13,7 @@ namespace Module3HW7
                 .AddSingleton<ILogger, Logger>()
                 .AddSingleton<IMessageWriter, MessageWriter>()
                 .AddTransient<IConfigurationService, ConfigurationService>()
+                .AddTransient<IBackupService, BackupService>()
                 .AddTransient<Starter>()
                 .BuildServiceProvider();
             var starter = serviceProvider.GetService<Starter>();

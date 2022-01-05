@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Module3HW7.Configs;
 using Module3HW7.Interfaces;
 
 namespace Module3HW7.Services
@@ -13,19 +14,17 @@ namespace Module3HW7.Services
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
         private readonly DirectoryInfo _directoryInfo;
         private StreamWriter _logWriter;
-        private string _backupPath;
+        private string _loggerPath;
+        private Config _config;
 
         public MessageWriter(IConfigurationService configurationService)
         {
             _configuration = configurationService;
-            var stringBuilder = new StringBuilder();
-            stringBuilder.Append(Directory.GetCurrentDirectory() + "\\" + _configuration.GetConfig().BackupPath);
-            _backupPath = stringBuilder.ToString();
-            _directoryInfo = new DirectoryInfo(_backupPath);
+            _config = _configuration.GetConfig();
+            _loggerPath = Path.Combine(Directory.GetCurrentDirectory(), _config.LoggerPath);
+            _directoryInfo = new DirectoryInfo(_loggerPath);
             _directoryInfo.Create();
-            stringBuilder.Clear();
-            stringBuilder.Append(Directory.GetCurrentDirectory() + "\\" + _configuration.GetConfig().LoggerPath + "\\log.txt");
-            var logFilePath = stringBuilder.ToString();
+            var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), _config.LoggerPath, _config.LogFileName);
             _logWriter = new StreamWriter(logFilePath, true);
             _logWriter.AutoFlush = true;
         }

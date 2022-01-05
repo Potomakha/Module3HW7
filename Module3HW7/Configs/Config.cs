@@ -10,6 +10,9 @@ namespace Module3HW7.Configs
     {
         public int RecordsInOneTime { get; set; }
         public string LoggerPath { get; set; }
+        public string LogFileName { get; set; }
         public string BackupPath { get; set; }
+        public string FileNameFormat { get; set; }
+        public string FileType { get; set; }
     }
 }

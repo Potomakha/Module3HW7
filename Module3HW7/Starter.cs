@@ -10,13 +10,15 @@ namespace Module3HW7
         private readonly ILogger _logger;
         private readonly IConfigurationService _configurationService;
         private readonly IMessageWriter _messageWriter;
+        private readonly IBackupService _backupService;
 
-        public Starter(ILogger logger, IConfigurationService configurationService, IMessageWriter messageWriter)
+        public Starter(ILogger logger, IConfigurationService configurationService, IMessageWriter messageWriter, IBackupService backupService)
         {
             _logger = logger;
             _configurationService = configurationService;
             _messageWriter = messageWriter;
-            _logger.MakeBackup += () => { Console.WriteLine("delaem"); };
+            _backupService = backupService;
+            _logger.MakeBackup += _backupService.Backup;
         }
 
         public async Task Run()
@@ -30,7 +32,7 @@ namespace Module3HW7
         {
             for (int i = 0; i < 50; i++)
             {
-                await _logger.LogErrorAsync(message);
+                await _logger.LogErrorAsync(message + i);
             }
         }
     }

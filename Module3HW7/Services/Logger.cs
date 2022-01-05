@@ -22,23 +22,22 @@ namespace Module3HW7.Services
             _config = _configurationService.GetConfig();
         }
 
-        public event Action MakeBackup;
+        public event Func<Task> MakeBackup;
 
         public async Task LogAsync(LogType type, string mesage)
         {
-            var log = $"{DateTime.UtcNow}: {type}: {mesage}";
-            Console.WriteLine(log);
-            await _messageWriter.WriteLogAsync(log);
-
             await _semaphoreSlim.WaitAsync();
-            _recordsCount++;
             if (_recordsCount >= _config.RecordsInOneTime)
             {
-                MakeBackup.Invoke();
+                MakeBackup?.Invoke();
                 _recordsCount = 0;
             }
 
+            _recordsCount++;
             _semaphoreSlim.Release();
+            var log = $"{DateTime.UtcNow}: {type}: {mesage}";
+            Console.WriteLine(log);
+            await _messageWriter.WriteLogAsync(log);
         }
 
         public async Task LogErrorAsync(string message)

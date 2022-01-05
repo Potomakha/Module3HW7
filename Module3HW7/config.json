@@ -1,5 +1,8 @@
 {
   "RecordsInOneTime": 5,
   "LoggerPath": "Log",
-  "BackupPath": "Log\\Backup"
+  "LogFileName": "log.txt",
+  "BackupPath": "Log\\Backup",
+  "FileNameFormat": "hh.mm.ss dd.MM.yyyy",
+  "FileType": ".txt"
 }

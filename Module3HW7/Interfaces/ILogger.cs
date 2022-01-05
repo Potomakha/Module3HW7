@@ -6,7 +6,7 @@ namespace Module3HW7.Interfaces
 {
     public interface ILogger
     {
-        public event Action MakeBackup;
+        public event Func<Task> MakeBackup;
         public Task LogInfoAsync(string message);
         public Task LogErrorAsync(string message);
         public Task LogWarningAsync(string message);
