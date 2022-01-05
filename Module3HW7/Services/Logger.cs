@@ -29,8 +29,8 @@ namespace Module3HW7.Services
             await _semaphoreSlim.WaitAsync();
             if (_recordsCount >= _config.RecordsInOneTime)
             {
-                MakeBackup?.Invoke();
                 _recordsCount = 0;
+                MakeBackup?.Invoke().GetAwaiter().GetResult();
             }
 
             _recordsCount++;
